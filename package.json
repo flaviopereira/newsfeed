@@ -1,0 +1,36 @@
+{
+  "name": "newsfeed",
+  "version": "1.0.0",
+  "description": "Content feed",
+  "main": "index.js",
+  "dependencies": {
+    "hapi": "^8.0.0",
+    "joi": "^9.2.0",
+    "mysql": "^2.12.0",
+    "tingodb": "^0.4.2",
+    "yar": "^3.0.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "code": "^4.0.0",
+    "lab": "^11.2.1",
+    "mocha": "^3.1.2",
+    "supertest": "^2.0.1"
+  },
+  "scripts": {
+    "test": "mocha -w -b"
+  },
+  "author": "Flávio Pereira",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flaviopereira/newsfeed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/flaviopereira/newsfeed/issues"
+  },
+  "homepage": "https://github.com/flaviopereira/newsfeed#readme",
+  "directories": {
+    "test": "test"
+  }
+}
