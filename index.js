@@ -3,9 +3,18 @@ const fs = require('fs');
 const Hapi = require('hapi');
 const routes = require('./routes');
 const serverCfg = require('./config/server');
+const Handlebars = require('handlebars');
+const engine = Handlebars.create();
 
 // Create a server with a host and port
 const server = new Hapi.Server();
+
+engine.registerHelper('if_equals', function(a, b, opts) {
+    if(a == b) // Or === depending on your needs
+        return opts.fn(this);
+    else
+        return opts.inverse(this);
+});
 
 server.connection({
     //host: serverCfg.host,
@@ -30,6 +39,15 @@ server.register([
     if (err) {
         console.log('Plugin register error: ', err);
     }
+
+});
+
+server.views({
+    engines: {
+        html: engine
+    },
+    path: 'views',
+    partialsPath: 'views/assets/partials'
 });
 
 // Service Routes

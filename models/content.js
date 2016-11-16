@@ -87,7 +87,7 @@ exports.deletePost = (postID) => {
     });
 }
 
-exports.getPost = (filters) => {
+exports.getPostNoSQL = (filterData) => {
     return new Promise((resolve, reject) => {
         let query = {
             limit: 0,
@@ -97,20 +97,64 @@ exports.getPost = (filters) => {
             }
         };
 
-        if (filters) {
-
+        if (filterData) {
+            query = filterData;
         }
 
-        //mongo insert
-        posts.find({'post_type': 'text'}, function(err, curr) {
-            if (err) reject(err);
+        console.log(query, '---- query');
 
-            console.log(curr);
+        posts.find(query.filters).limit(query.limit).skip(query.skip).toArray(function(err, curr) {
+            if (err) reject(err);
 
             resolve({
                 statusCode: 200,
                 message: 'Found',
                 data: curr
+            });
+        });
+    });
+}
+
+exports.getPostSQL = (filterData) => {
+    return new Promise((resolve, reject) => {
+        let query = {
+            limit: 10,
+            skip: 0,
+            filters: {
+                post_privacy: 'public'
+            }
+        },
+        whereClause = 'WHERE post_privacy = "public"',
+        limitClause = '0, 10',
+        finalFilters;
+
+        if (filterData) {
+            //work received filters
+
+        }
+
+        mysql.query('SELECT * FROM posts '+whereClause+' LIMIT '+limitClause+'', function(err, rows, fields) {
+            if (err) reject(err);
+            let dataObj = [];
+
+            rows.forEach(function(el, i) {
+                dataObj.push({
+                    post_id: el.post_id,
+                    post_type: el.post_type,
+                    post_title: el.post_title,
+                    post_url: el.post_url,
+                    post_text: el.post_text,
+                    post_image: el.post_image,
+                    post_privacy: el.post_privacy,
+                    post_author_name: el.post_author_name,
+                    post_author_id: el.post_author_id
+                });
+            });
+
+            resolve({
+                statusCode: 200,
+                message: 'Found',
+                data: dataObj
             });
         });
     });
