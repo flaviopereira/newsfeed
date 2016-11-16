@@ -92,3 +92,9 @@ exports.friends = {
         }
     }
 }
+
+
+exports.logout = (request, reply) => {
+    request.session.clear('user');
+    reply.redirect('/');
+}

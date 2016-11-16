@@ -10,6 +10,7 @@ exports.endpoints = [
     { method: 'GET',          path: '/{sql*}',                      handler: Static.home },
     { method: 'GET',          path: '/login',                       handler: Static.login },
     { method: 'GET',          path: '/register',                    handler: Static.register },
+    { method: 'GET',          path: '/logout',                      handler: Users.logout },
 
     { method: 'POST',         path: '/register',                    config: Users.register },
     { method: 'POST',         path: '/auth',                        config: Users.auth },

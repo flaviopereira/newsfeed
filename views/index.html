@@ -2,9 +2,12 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h1>Hello {{userdata.username}}</h1>
+            <div class="area-panel">
+                <h1>Hello {{userdata.username}}</h1>
+            </div>
         </div>
         <div class="col-md-8">
+            <div class="area-panel">
             {{#if error}}
             <p>:( <br> Something went wrong</p>
             {{else}}
@@ -30,10 +33,10 @@
                 <h1>url post</h1>
                 <a href="{{post_url}}">{{post_url}}</a>
                 {{/if_equals}}
-
             </div>
             {{/each}}
             {{/if}}
+            </div>
         </div>
     </div>
 </div>
