@@ -1,7 +1,7 @@
 'use strict';
 const Joi = require('joi');
 
-exports.auth = {
+exports.login = {
     validate: {
         payload: {
             email: Joi.string().email().required(),
@@ -15,9 +15,9 @@ exports.auth = {
             password: request.payload.password
         };
 
-        users.auth(userInfo).then((res) => {
+        users.login(userInfo).then((res) => {
             if (res.statusCode === 200) {
-                delete res.data.password;
+                delete res.data.user_password;
                 request.session.set('user', res.data);
             }
 
@@ -49,17 +49,51 @@ exports.register = {
             reply({
                 statusCode: 400,
                 message: 'Bad Request',
-                data: ''
+                data: 'Logged In'
             });
         }
     }
 }
 
-exports.friends = {
+exports.manageFriends = {
     validate: {
         payload: {
-            id: Joi.string().required(),
-            username: Joi.string().required()
+            id: Joi.string().required()
+        }
+    },
+    handler: (request, reply) => {
+        let userSession = request.session.get('user');
+
+        //check session
+        if (typeof userSession === 'undefined') {
+            reply({
+                statusCode: 401,
+                message: 'Unauthorized',
+                data: 'Auth Needed'
+            });
+        } else {
+            const users = require('../models/users');
+
+            if (request.params.action == 'add' || request.params.action == 'remove') {
+                users.manageFriends(request.payload, userSession, request.params.action).then((res) => {
+                    reply(res);
+                });
+            } else {
+                reply({
+                    statusCode: 400,
+                    message: 'Bad Request',
+                    data: 'Wrong Params'
+                });
+            }
+        }
+    }
+}
+
+exports.getFriends = {
+    validate: {
+        payload: {
+            page: Joi.number().required(),
+            pageAmount: Joi.number().required()
         }
     },
     handler: (request, reply) => {
@@ -67,34 +101,37 @@ exports.friends = {
 
         if (typeof userSession === 'undefined') {
             reply({
-                statusCode: 400,
-                message: 'Bad Request',
-                data: ''
+                statusCode: 401,
+                message: 'Unauthorized',
+                data: 'Auth Needed'
             });
         } else {
             const users = require('../models/users');
 
-            console.log(request.params.action);
-
-            if (request.params.action == 'add' || request.params.action == 'remove') {
-                console.log('aaaaaaaaaa');
-                users.friends(request.payload, userSession, request.params.action).then((res) => {
-                    reply(res);
-                });
-            } else {
-                console.log('err 1');
-                reply({
-                    statusCode: 400,
-                    message: 'Bad Request',
-                    data: ''
-                });
-            }
+            users.getFriends(userSession, {page: parseInt(request.payload.page), pageAmount: parseInt(request.payload.pageAmount)}).then((res) => {
+                reply(res);
+            });
         }
     }
 }
 
 
-exports.logout = (request, reply) => {
-    request.session.clear('user');
-    reply.redirect('/');
+exports.logout ={
+    handler: (request, reply) => {
+        let userSession = request.session.get('user');
+
+        if (typeof userSession === 'undefined') {
+            reply({
+                statusCode: 400,
+                message: 'Bad Request',
+                data: 'No Session'
+            });
+        } else {
+            request.session.clear('user');
+            reply({
+                statusCode: 200,
+                message: 'OK'
+            });
+        }
+    }
 }
