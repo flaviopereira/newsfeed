@@ -7,7 +7,6 @@ const mysql = db.mysql.connect;
 
 exports.setPost = (postdata, userdata) => {
     return new Promise((resolve, reject) => {
-        console.log(userdata);
         let post = {
             post_type: postdata.type,
             post_title: postdata.content.title,
@@ -42,7 +41,6 @@ exports.setPost = (postdata, userdata) => {
 
 exports.editPost = (postdata, userdata, postID) => {
     return new Promise((resolve, reject) => {
-        console.log(userdata);
         let post = {
             post_type: postdata.type,
             post_title: postdata.content.title,
@@ -104,8 +102,6 @@ exports.getPostNoSQL = (filterData) => {
         if (typeof filterData.type !== 'undefined') {
             query.filters['post_type'] = {$in: filterData.type};
         }
-
-        console.log(query.filters);
 
         posts.find(query.filters).limit(query.limit).skip(query.skip).toArray((err, curr) => {
             if (err) reject(err);
