@@ -5,10 +5,10 @@ const tingo = require('tingodb')().Db;
 module.exports = {
     mysql: {
         connect: mysql.createConnection({
-            host     : 'localhost',
-            user     : 'feeduser',
-            password : '<xG&4-Pw',
-            database : 'newsfeed'
+            host     : '',
+            user     : '',
+            password : '',
+            database : ''
         })
     },
     tingo: () => {
